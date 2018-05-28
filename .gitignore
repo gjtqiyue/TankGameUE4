@@ -1,3 +1,13 @@
+# Starter content
+BattleTank/Content/StarterContent/
+
+# Unreal Generated Files
+*/Intermediate/
+*/Build/
+*/Saved/
+*/Binaries
+*/DerivedDataCache/
+
 # Visual Studio 2015 user specific files
 .vs/
 
