@@ -6,15 +6,14 @@
 #include "TankTrack.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "Engine/World.h"
 
 // Sets default values
 ATank::ATank()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	AimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 
 }
 
@@ -35,35 +34,30 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::AimAt(FVector HitLocation)
 {
+	if (!ensure(AimingComponent)) { return; }
 	AimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
-void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
-{
-	Barrel = BarrelToSet;
-	AimingComponent->SetBarrelReference(BarrelToSet);
-}
-
-void ATank::SetTurretReference(UTankTurret * TurretToSet)
-{
-	AimingComponent->SetTurretReference(TurretToSet);
-}
-
-void ATank::SetTrackReference(UTankTrack * LeftTrackToSet, UTankTrack * RightTrackToSet)
-{
-	LeftTrack = LeftTrackToSet;
-	RightTrack = RightTrackToSet;
-}
+//void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
+//{
+//	Barrel = BarrelToSet;
+//	AimingComponent->SetBarrelReference(BarrelToSet);
+//}
+//
+//void ATank::SetTurretReference(UTankTurret * TurretToSet)
+//{
+//	AimingComponent->SetTurretReference(TurretToSet);
+//}
 
 void ATank::Fire()
 {
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (!ProjectileBlueprint) { return; }
-	if (Barrel && isReloaded && canFire) {
-
+	if (!ensure(ProjectileBlueprint)) { return; }
+	if (AimingComponent->BarrelReference() && isReloaded && canFire) {
+		UE_LOG(LogTemp, Warning, TEXT("Fire"));
 		// Spawn a projectile at the spawn point
-		FTransform SpawnPoint = Barrel->GetSocketTransform(FName("Projectile"));
+		FTransform SpawnPoint = AimingComponent->BarrelReference()->GetSocketTransform(FName("Projectile"));
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, SpawnPoint);
 
 		Projectile->LaunchProjectile(LaunchSpeed);

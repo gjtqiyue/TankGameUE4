@@ -41,7 +41,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	if (!Barrel) { return; }
+	if (!ensure(Barrel)) { return; }
 
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
@@ -69,17 +69,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	}
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
-{
-	Barrel = BarrelToSet;
-	
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret * TurretToSet)
-{
-	Turret = TurretToSet;
-}
-
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
 	// Find the difference between two directions
@@ -87,8 +76,24 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto AimRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimRotator - BarrelRotation;
 
+	float angle = DeltaRotator.Yaw;
+	if (DeltaRotator.Yaw >= 180) {
+		angle = DeltaRotator.Yaw - 360;
+	}
+
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
+	Turret->Rotate(angle);
 	
+}
+
+UTankBarrel* UTankAimingComponent::BarrelReference() const
+{
+	return Barrel;
+}
+
+void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
+{
+	Barrel = BarrelToSet;
+	Turret = TurretToSet;
 }
 

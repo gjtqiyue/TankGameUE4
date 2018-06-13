@@ -4,15 +4,14 @@
 #include "TankPlayerController.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
+#include "TankAimingComponent.h"
 #include "Tank.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (GetControlledTank()) {
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *(GetControlledTank()->GetName()));
-	}
+
+	FoundAimingComponent(GetControlledTank()->FindComponentByClass<UTankAimingComponent>());
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -27,7 +26,7 @@ ATank* ATankPlayerController::GetControlledTank() const {
 }
 
 void ATankPlayerController::AimTowardsCrosshair() {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	FVector HitLocation; // Out parameter
 
