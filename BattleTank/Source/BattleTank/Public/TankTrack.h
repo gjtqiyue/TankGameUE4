@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrack.generated.h"
 
+class USphereComponent;
+
 /**
  * TankTrack is used to set maximum driving force, and apply force to the tank
  */
@@ -21,4 +23,16 @@ public:
 	// Max force per track, in Newton force
 	UPROPERTY(EditDefaultsOnly)
 	float TrackMaxDrivingForce = 400000;
-};
+
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	USphereComponent * CollisionComponent;
+
+	UTankTrack();
+
+	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction) override;
+ };

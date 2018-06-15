@@ -7,6 +7,8 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
+class UTankAimingComponent;
+
 class ATank;
 /**
  * 
@@ -24,4 +26,6 @@ private:
 
 	// How close AI tank can get to player
 	float AcceptanceRadius = 3000;
+
+	UTankAimingComponent * AimingComponent = nullptr;
 };
