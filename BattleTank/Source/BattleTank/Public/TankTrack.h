@@ -34,5 +34,9 @@ private:
 
 	virtual void BeginPlay() override;
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction) override;
+	void ApplySidewaysForce(float DeltaTime);
+
+	void DriveTrack();
+
+	float CurrentThrottle = 0.f;
  };

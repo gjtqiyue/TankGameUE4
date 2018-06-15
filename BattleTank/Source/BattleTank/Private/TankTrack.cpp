@@ -11,8 +11,6 @@ UTankTrack::UTankTrack()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	
 }
 
 
@@ -25,11 +23,18 @@ void UTankTrack::BeginPlay()
 }
 
 
-// Called every frame
-void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+void UTankTrack::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	// Drive track
+	DriveTrack();
+	CurrentThrottle = 0.f;
 
+	// Apply sideways force to prevent slipping
+	ApplySidewaysForce(GetWorld()->GetDeltaSeconds());
+}
+
+void UTankTrack::ApplySidewaysForce(float DeltaTime)
+{
 	// if 90 degree should be 0, 90 degree should be 1
 	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
 
@@ -44,18 +49,19 @@ void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActor
 
 void UTankTrack::SetThrottle(float Throttle)
 {
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1, 1);
+}
+
+void UTankTrack::DriveTrack()
+{
 	// Clamp the actual throttle value
-	auto ForceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForce;
+	auto ForceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
 	auto ForceLocation = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
-
 }
 
 
-void UTankTrack::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
-}
+
 
 

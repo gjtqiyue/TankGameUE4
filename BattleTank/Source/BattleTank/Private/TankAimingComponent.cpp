@@ -91,9 +91,13 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto AimRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimRotator - BarrelRotation;
 
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), DeltaRotator.Yaw);
 	float angle = DeltaRotator.Yaw;
 	if (DeltaRotator.Yaw >= 180) {
 		angle = DeltaRotator.Yaw - 360;
+	}
+	if (DeltaRotator.Yaw <= -180) {
+		angle = DeltaRotator.Yaw + 360;
 	}
 
 	Barrel->Elevate(DeltaRotator.Pitch);
@@ -135,4 +139,9 @@ void UTankAimingComponent::Fire()
 
 		LastFireTime = FPlatformTime::Seconds();
 	}
+}
+
+EFiringStatus UTankAimingComponent::getFiringStatus() const
+{
+	return FiringStatus;
 }

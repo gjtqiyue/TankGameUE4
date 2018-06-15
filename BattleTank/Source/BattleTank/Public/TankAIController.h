@@ -25,6 +25,7 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	// How close AI tank can get to player
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float AcceptanceRadius = 3000;
 
 	UTankAimingComponent * AimingComponent = nullptr;

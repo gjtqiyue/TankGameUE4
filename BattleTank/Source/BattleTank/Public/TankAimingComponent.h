@@ -42,6 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = TankAction)
 	void Fire();
 
+	EFiringStatus getFiringStatus() const;
+
 protected:
 	bool isBarrelMoving();
 
