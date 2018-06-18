@@ -11,7 +11,8 @@ enum class EFiringStatus : uint8
 {
 	Reload,
 	Aim,
-	Lock
+	Locked,
+	OutOfAmmo
 };
 
 class UTankBarrel;
@@ -50,8 +51,13 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringStatus FiringStatus = EFiringStatus::Reload;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Ammo")
+	int32 CurrentAmmo;
+
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet);
+
+	
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
@@ -66,6 +72,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 	bool canFire = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	int32 MaxAmmo = 10;
 
 	double LastFireTime = 0;
 

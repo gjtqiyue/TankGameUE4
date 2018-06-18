@@ -29,7 +29,7 @@ void ATankAIController::Tick(float DeltaTime)
 		if (!ensure(AimingComponent)) { return; }
 		AimingComponent->AimAt(PlayerTank->GetActorTransform().GetLocation());
 
-		if (AimingComponent->getFiringStatus() == EFiringStatus::Lock) {
+		if (AimingComponent->getFiringStatus() == EFiringStatus::Locked) {
 			AimingComponent->Fire();
 		}
 	}

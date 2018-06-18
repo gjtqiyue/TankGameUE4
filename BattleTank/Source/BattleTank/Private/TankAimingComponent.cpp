@@ -31,7 +31,7 @@ void UTankAimingComponent::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 	// Reset the last fire time
 	LastFireTime = FPlatformTime::Seconds();
-	
+	CurrentAmmo = MaxAmmo;
 }
 
 
@@ -40,14 +40,17 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds) {
+	if (CurrentAmmo <= 0) {
+		FiringStatus = EFiringStatus::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds) {
 		FiringStatus = EFiringStatus::Reload;
 	}
 	else if (isBarrelMoving()) {
 		FiringStatus = EFiringStatus::Aim;
 	}
 	else {
-		FiringStatus = EFiringStatus::Lock;
+		FiringStatus = EFiringStatus::Locked;
 	}
 }
 
@@ -127,7 +130,7 @@ void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * T
 void UTankAimingComponent::Fire()
 {
 	
-	if (FiringStatus != EFiringStatus::Reload && canFire) {
+	if (FiringStatus != EFiringStatus::Reload && canFire && FiringStatus != EFiringStatus::OutOfAmmo) {
 		if (!ensure(ProjectileBlueprint)) { return; }
 		if (!ensure(Barrel)) { return; }
 		UE_LOG(LogTemp, Warning, TEXT("Fire"));
@@ -136,6 +139,8 @@ void UTankAimingComponent::Fire()
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, SpawnPoint);
 
 		Projectile->LaunchProjectile(LaunchSpeed);
+
+		CurrentAmmo = CurrentAmmo - 1;
 
 		LastFireTime = FPlatformTime::Seconds();
 	}
