@@ -16,6 +16,8 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentHealth = MaxHealth;
 }
 
 // Called to bind functionality to input
@@ -25,31 +27,21 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-//void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
-//{
-//	Barrel = BarrelToSet;
-//	AimingComponent->SetBarrelReference(BarrelToSet);
-//}
-//
-//void ATank::SetTurretReference(UTankTurret * TurretToSet)
-//{
-//	AimingComponent->SetTurretReference(TurretToSet);
-//}
+// Take damage
+float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);
+	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);
+	CurrentHealth -= DamageToApply;
 
-//void ATank::Fire()
-//{
-//	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-//
-//	if (!ensure(ProjectileBlueprint)) { return; }
-//	if (AimingComponent->BarrelReference() && isReloaded && canFire) {
-//		UE_LOG(LogTemp, Warning, TEXT("Fire"));
-//		// Spawn a projectile at the spawn point
-//		FTransform SpawnPoint = AimingComponent->BarrelReference()->GetSocketTransform(FName("Projectile"));
-//		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, SpawnPoint);
-//
-//		Projectile->LaunchProjectile(LaunchSpeed);
-//
-//		// Reset the last fire time
-//		LastFireTime = FPlatformTime::Seconds();
-//	}
-//}
+	if (CurrentHealth <= 0) {
+		UE_LOG(LogTemp, Warning, TEXT("%s died"), *GetName());
+	}
+
+	return DamageToApply;
+}
+
+float ATank::GetHealthPercent()
+{
+	return (float)CurrentHealth / (float)MaxHealth;
+}

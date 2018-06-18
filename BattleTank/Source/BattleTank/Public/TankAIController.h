@@ -26,7 +26,7 @@ private:
 
 	// How close AI tank can get to player
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	float AcceptanceRadius = 3000.0;
+	float AcceptanceRadius = 5000;
 
 	UTankAimingComponent * AimingComponent = nullptr;
 };

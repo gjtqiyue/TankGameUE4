@@ -41,6 +41,14 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	URadialForceComponent * ExplosionForce = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = Delay)
+	float DestroyDelay = 10;
+
+	UPROPERTY(EditDefaultsOnly, Category = Delay)
+	float BaseDamage = 10;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit);
+	
+	void OnTimerExpire();
 };
