@@ -6,6 +6,8 @@
 #include "CoreMinimal.h"
 #include "Tank.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankEvent);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -20,6 +22,8 @@ public:
 	// Return current health
 	UFUNCTION(BlueprintPure, Category = Health)
 	float GetHealthPercent();
+
+	FTankEvent OnDeath;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Health)

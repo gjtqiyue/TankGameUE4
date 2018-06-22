@@ -20,9 +20,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 
-private:
-	
+	UFUNCTION()
+	void OnTankDeath();
 
+private:
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaTime) override;
@@ -36,6 +37,8 @@ private:
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
+
+	void SetPawn(APawn * InPawn);
 
 private:
 	UPROPERTY(EditDefaultsOnly)

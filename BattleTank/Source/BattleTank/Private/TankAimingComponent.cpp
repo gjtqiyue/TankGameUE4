@@ -28,7 +28,6 @@ void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 	// Reset the last fire time
 	LastFireTime = FPlatformTime::Seconds();
 	CurrentAmmo = MaxAmmo;
@@ -133,7 +132,6 @@ void UTankAimingComponent::Fire()
 	if (FiringStatus != EFiringStatus::Reload && canFire && FiringStatus != EFiringStatus::OutOfAmmo) {
 		if (!ensure(ProjectileBlueprint)) { return; }
 		if (!ensure(Barrel)) { return; }
-		UE_LOG(LogTemp, Warning, TEXT("Fire"));
 		// Spawn a projectile at the spawn point
 		FTransform SpawnPoint = Barrel->GetSocketTransform(FName("Projectile"));
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, SpawnPoint);

@@ -8,8 +8,8 @@
 #include "TankAIController.generated.h"
 
 class UTankAimingComponent;
-
 class ATank;
+
 /**
  * 
  */
@@ -17,16 +17,21 @@ UCLASS()
 class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
-	
-private:
 
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-
+protected:
 	// How close AI tank can get to player
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	float AcceptanceRadius = 5000;
+	float AcceptanceRadius = 8000;
+
+	UFUNCTION()
+	void OnTankDeath();
+	
+private:
+	virtual void BeginPlay() override;
+
+	virtual void SetPawn(APawn* InPawn) override;
+
+	virtual void Tick(float DeltaTime) override;
 
 	UTankAimingComponent * AimingComponent = nullptr;
 };

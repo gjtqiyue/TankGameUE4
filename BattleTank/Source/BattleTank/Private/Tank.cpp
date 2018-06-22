@@ -3,6 +3,8 @@
 #include "Tank.h"
 #include "Engine/World.h"
 
+
+
 // Sets default values
 ATank::ATank()
 {
@@ -35,7 +37,7 @@ float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEv
 	CurrentHealth -= DamageToApply;
 
 	if (CurrentHealth <= 0) {
-		UE_LOG(LogTemp, Warning, TEXT("%s died"), *GetName());
+		OnDeath.Broadcast();
 	}
 
 	return DamageToApply;
