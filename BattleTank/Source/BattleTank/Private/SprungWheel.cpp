@@ -12,15 +12,14 @@ ASprungWheel::ASprungWheel()
 	PhysicsConstraintComp = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Spring Constraint"));
 	SetRootComponent(PhysicsConstraintComp);
 
-	Axle = CreateDefaultSubobject<UStaticMeshComponent>(FName("Axle"));
-	Wheel->AttachToComponent(PhysicsConstraintComp, FAttachmentTransformRules::KeepRelativeTransform);
-
-	WheelConstraintComp = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Wheel Constraint"));
-	WheelConstraintComp->AttachToComponent(Axle, FAttachmentTransformRules::KeepRelativeTransform);
-	
+	Axle = CreateDefaultSubobject<USphereComponent>(FName("Axle"));
+	Axle->AttachTo(PhysicsConstraintComp);
 
 	Wheel = CreateDefaultSubobject<USphereComponent>(FName("Wheel"));
-	Wheel->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	Wheel->AttachTo(Axle);
+
+	WheelConstraintComp = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Wheel Constraint"));
+	WheelConstraintComp->AttachTo(Axle);
 }
 
 // Called when the game starts or when spawned
@@ -34,16 +33,17 @@ void ASprungWheel::BeginPlay()
 		PhysicsConstraintComp->SetConstrainedComponents(
 			BodyRoot,
 			NAME_None,
-			Cast<UPrimitiveComponent>(Axle),
+			Axle,
 			NAME_None
 		);
 		WheelConstraintComp->SetConstrainedComponents(
-			Cast<UPrimitiveComponent>(Axle),
+			Axle,
 			NAME_None,
-			Cast<UPrimitiveComponent>(Wheel),
+			Wheel,
 			NAME_None
 		);
 	}
+
 }
 
 // Called every frame
