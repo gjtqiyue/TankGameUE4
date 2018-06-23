@@ -57,8 +57,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet);
 
-	
-
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float LaunchSpeed = 10000; // Sensible starting value of 1000m/s
