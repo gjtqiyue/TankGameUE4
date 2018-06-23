@@ -16,18 +16,23 @@ USpawnComponent::USpawnComponent()
 }
 
 
+AActor * USpawnComponent::GetSpawnedActor() const
+{
+	return SpawnedActor;
+}
+
 // Called when the game starts
 void USpawnComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Spawn the SprungWheel object and attach to the component
-	auto Object = GetWorld()->SpawnActorDeferred<AActor>(SpawnClass, GetComponentTransform());
+	SpawnedActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnClass, GetComponentTransform());
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *(GetComponentTransform().ToString()));
-	if (!ensure(Object)) { return; }
+	if (!ensure(SpawnedActor)) { return; }
 
-	Object->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
-	UGameplayStatics::FinishSpawningActor(Object, GetComponentTransform());
+	SpawnedActor->AttachToComponent(this, FAttachmentTransformRules::KeepWorldTransform);
+	UGameplayStatics::FinishSpawningActor(SpawnedActor, GetComponentTransform());
 }
 
 

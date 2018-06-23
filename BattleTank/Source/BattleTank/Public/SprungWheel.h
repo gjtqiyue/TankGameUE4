@@ -23,9 +23,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void AddDrivingForce(float ForceMegnitute);
 
 private:
 
@@ -42,5 +47,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Components)
 	UPhysicsConstraintComponent * WheelConstraintComp = nullptr;
 
-	
+	// Total force of this frame
+	float ForceMegnitute = 0;
 };

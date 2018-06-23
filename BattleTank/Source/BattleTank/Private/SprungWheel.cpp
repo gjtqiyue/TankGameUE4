@@ -8,24 +8,28 @@ ASprungWheel::ASprungWheel()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = TG_PostPhysics;
 
 	PhysicsConstraintComp = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Spring Constraint"));
 	SetRootComponent(PhysicsConstraintComp);
 
 	Axle = CreateDefaultSubobject<USphereComponent>(FName("Axle"));
-	Axle->AttachTo(PhysicsConstraintComp);
+	Axle->AttachToComponent(PhysicsConstraintComp, FAttachmentTransformRules::KeepRelativeTransform);
 
 	Wheel = CreateDefaultSubobject<USphereComponent>(FName("Wheel"));
-	Wheel->AttachTo(Axle);
+	Wheel->AttachToComponent(Axle, FAttachmentTransformRules::KeepRelativeTransform);
 
 	WheelConstraintComp = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Wheel Constraint"));
-	WheelConstraintComp->AttachTo(Axle);
+	WheelConstraintComp->AttachToComponent(Axle, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
 void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Wheel->SetNotifyRigidBodyCollision(true);
+	Wheel->OnComponentHit.AddDynamic(this, &ASprungWheel::OnHit);
 	
 	// Set up the constraint component
 	if (ensure(GetAttachParentActor())) {
@@ -46,10 +50,22 @@ void ASprungWheel::BeginPlay()
 
 }
 
+void ASprungWheel::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Force: %f"), ForceMegnitute);
+	Wheel->AddForce(Axle->GetForwardVector() * ForceMegnitute);
+}
+
 // Called every frame
 void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	ForceMegnitute = 0;
+}
+
+void ASprungWheel::AddDrivingForce(float ForceApplied)
+{
+	ForceMegnitute += ForceApplied;
 }
 

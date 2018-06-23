@@ -25,8 +25,8 @@ public:
 	float TrackMaxDrivingForce = 400000;
 
 private:
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	/*UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);*/
 
 	USphereComponent * CollisionComponent;
 
@@ -34,9 +34,7 @@ private:
 
 	virtual void BeginPlay() override;
 
-	void ApplySidewaysForce(float DeltaTime);
+	void DriveTrack(float Throttle);
 
-	void DriveTrack();
-
-	float CurrentThrottle = 0.f;
+	TArray<class ASprungWheel*> GetWheels() const;
  };
